@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.vst</groupId>
+	<artifactId>vst-vue</artifactId>
+	<version>${revision}</version>
+
+	<name>vst-vue</name>
+	<url/>
+	<description>vst-vue project for Spring Boot</description>
+
+
+	<properties>
+		<revision>1.0.0</revision>
+		<spring-boot.version>3.2.12</spring-boot.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>17</java.version>
+
+		<therapi-javadoc.version>0.15.0</therapi-javadoc.version>
+		<mapstruct-plus.version>1.4.5</mapstruct-plus.version>
+		<mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
+		<lombok.version>1.18.34</lombok.version>
+
+		<hutool.version>5.8.31</hutool.version>
+		<!-- 离线IP地址定位库 -->
+		<ip2region.version>2.7.0</ip2region.version>
+
+		<!-- 插件版本 -->
+		<maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+		<maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
+		<maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+		<flatten-maven-plugin.version>1.3.0</flatten-maven-plugin.version>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<properties>
+				<!-- 环境标识，需要与配置文件的名称相对应 -->
+				<profiles.active>local</profiles.active>
+				<logging.level>info</logging.level>
+				<monitor.username>vst</monitor.username>
+				<monitor.password>123456</monitor.password>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<!-- 环境标识，需要与配置文件的名称相对应 -->
+				<profiles.active>dev</profiles.active>
+				<logging.level>info</logging.level>
+				<monitor.username>vst</monitor.username>
+				<monitor.password>123456</monitor.password>
+			</properties>
+			<activation>
+				<!-- 默认环境 -->
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<profiles.active>prod</profiles.active>
+				<logging.level>warn</logging.level>
+				<monitor.username>vst</monitor.username>
+				<monitor.password>123456</monitor.password>
+			</properties>
+		</profile>
+	</profiles>
+
+	<!-- 依赖声明 -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- SpringBoot的依赖配置-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- hutool 的依赖配置-->
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-bom</artifactId>
+				<version>${hutool.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.github.therapi</groupId>
+				<artifactId>therapi-runtime-javadoc</artifactId>
+				<version>${therapi-javadoc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.github.linpeilie</groupId>
+				<artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+				<version>${mapstruct-plus.version}</version>
+			</dependency>
+
+			<!-- 离线IP地址定位库 ip2region -->
+			<dependency>
+				<groupId>org.lionsoul</groupId>
+				<artifactId>ip2region</artifactId>
+				<version>${ip2region.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<modules>
+		<module>vst-admin</module>
+		<module>vst-common</module>
+	</modules>
+	<packaging>pom</packaging>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.verison}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>com.github.therapi</groupId>
+							<artifactId>therapi-runtime-javadoc-scribe</artifactId>
+							<version>${therapi-javadoc.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-configuration-processor</artifactId>
+							<version>${spring-boot.version}</version>
+						</path>
+						<path>
+							<groupId>io.github.linpeilie</groupId>
+							<artifactId>mapstruct-plus-processor</artifactId>
+							<version>${mapstruct-plus.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${mapstruct-plus.lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<!-- 单元测试使用 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<!-- 根据打包环境执行对应的@Tag测试方法 -->
+					<groups>${profiles.active}</groups>
+					<!-- 排除标签 -->
+					<excludedGroups>exclude</excludedGroups>
+				</configuration>
+			</plugin>
+			<!-- 统一版本号管理 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>${flatten-maven-plugin.version}</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>resolveCiFriendliesOnly</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<!-- 关闭过滤 -->
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<!-- 引入所有 匹配文件进行过滤 -->
+				<includes>
+					<include>application*</include>
+					<include>bootstrap*</include>
+					<include>banner*</include>
+				</includes>
+				<!-- 启用过滤 即该资源中的变量将会被过滤器中的值替换 -->
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>public</id>
+			<name>huawei nexus</name>
+			<url>https://mirrors.huaweicloud.com/repository/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>public</id>
+			<name>huawei nexus</name>
+			<url>https://mirrors.huaweicloud.com/repository/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+</project>
